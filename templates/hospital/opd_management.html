@@ -55,6 +55,7 @@
                 <!-- Data will be dynamically loaded here -->
             </tbody>
         </table>
+        <p id='summarize'>Total Time:</p>
     </div>
 
     <!-- No Appointment Message -->
@@ -70,7 +71,9 @@
             // Clear the table and message
             $('#appointment-body').empty();
             $('#no-appointment').hide();
-
+            $('#summarize').text(`
+            Your Estimation time is 
+        `)
             if (!doctorId) return;
 
             // AJAX request to fetch filtered appointments
@@ -86,6 +89,8 @@
                         return;
                     }
 
+                    
+                    let totalTime = 0
                     appointments.forEach(function (appointment) {
                         $('#appointment-body').append(`
                             <tr>
@@ -94,10 +99,17 @@
                                 <td>${appointment.appointment_date}</td>
                                 <td>${appointment.age}</td>
                                 <td>${appointment.gender}</td>
-                                <td>${appointment.time}</td> <!-- New Time Column -->
+                                <td>${appointment.time}</td>
+                                <td>${appointment.service_time} min</td>
+    
                             </tr>
                         `);
+                        totalTime += appointment.service_time
+                        $('#summarize').text(`
+                        Your Estimation time is ${totalTime} min
+                    `)
                     });
+                    
                 },
                 error: function () {
                     alert("Error fetching appointments.");
